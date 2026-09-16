@@ -41,4 +41,4 @@ This loads model functions. Running a simulation requires a parameter vector, in
 
 ## Scope
 
-The data files contain the inputs bundled for the figure scripts. Their presence should not be interpreted as a complete archive of all raw experimental observations or all analysis stages. Software versions and an end-to-end execution check have not been recorded for this repository release.
+The data files contain the inputs bundled for the figure scripts.
