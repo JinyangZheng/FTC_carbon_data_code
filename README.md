@@ -2,6 +2,21 @@
 
 R plotting scripts, accompanying figure data, and model code for a study of freeze-thaw cycles and soil carbon dynamics.
 
+## Version 2
+
+The [version2](version2/) directory contains 12 plotting scripts, the Table 1 analysis, the full model code, and 13 accompanying `.rds` data files. The original directory structure and file contents are preserved.
+
+From the repository root, run the version 2 scripts using their full repository paths, for example
+
+```sh
+Rscript version2/Fig_2/Fig_2_plot.R
+Rscript version2/Table_1/Table_1_analysis.R
+```
+
+The Table 1 analysis uses `nlme`, `lmerTest`, and `car`. Plotting and analysis scripts read their data from the same directory and write results to `version2_outputs` by default. A different output directory can be supplied as the first command-line argument.
+
+The figure and model directories at the repository root retain the earlier release. The examples below refer to that release.
+
 ## Contents
 
 - `Fig_2` through the grouped figure directories contain 24 plotting scripts and 24 matching `.rds` data files for Figures 2–5 and Supplementary Figures S4–S23.
