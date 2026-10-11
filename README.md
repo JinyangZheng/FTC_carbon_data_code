@@ -13,7 +13,7 @@ The archive contains 12 folders and 29 source and data files.
 
 ## Running figures and tables
 
-Install R and the packages used by the scripts. Plotting dependencies are `ggplot2`, `patchwork`, `ragg`, and `data.table`. Table 1 uses `nlme`, `lmerTest`, and `car`. Table S2 uses `nlme` and `car`. Several figures use Times New Roman, which should be installed for consistent typography.
+Install R and the packages used by the scripts. Plotting dependencies are `ggplot2`, `patchwork`, `ragg`, and `data.table`. Table 1 uses `nlme`, `lmerTest`, and `car`. Table S2 uses `nlme` and `car`.
 
 Download the repository and keep its directory structure intact. From the repository root, run scripts with an explicit output directory, for example
 
@@ -22,15 +22,6 @@ Rscript Fig_2/Fig_2_plot.R output/Fig_2
 Rscript Fig_3_S4_S5/Fig_3_plot.R output/Fig_3
 Rscript Table_1/Table_1_analysis.R output/Table_1
 Rscript Table_S2/Table_S2_analysis.R output/Table_S2
-```
-
-Each plotting or analysis script reads its matching data file from the same directory. Plotting scripts generate PNG figures, and the statistical analysis scripts generate CSV tables. The first command-line argument sets the output directory. If that argument and `FTC_OUTPUT_DIR` are both absent, results are written to a `version2_outputs` directory alongside the repository directory.
-
-To inspect the bundled data in R
-
-```r
-figure_data <- readRDS("Fig_2/Fig_2_data.rds")
-names(figure_data)
 ```
 
 ## Model code
