@@ -11,31 +11,6 @@ The archive contains 12 folders and 29 source and data files.
 - `Table_S2` contains `Table_S2_analysis.R` and `Table_S2_data.rds`.
 - `FTC_model/Full_model.R` contains the freeze-thaw driver and carbon model functions.
 
-## Running figures and tables
-
-Install R and the packages used by the scripts. Plotting dependencies are `ggplot2`, `patchwork`, `ragg`, and `data.table`. Table 1 uses `nlme`, `lmerTest`, and `car`. Table S2 uses `nlme` and `car`.
-
-Download the repository and keep its directory structure intact. From the repository root, run scripts with an explicit output directory, for example
-
-```sh
-Rscript Fig_2/Fig_2_plot.R output/Fig_2
-Rscript Fig_3_S4_S5/Fig_3_plot.R output/Fig_3
-Rscript Table_1/Table_1_analysis.R output/Table_1
-Rscript Table_S2/Table_S2_analysis.R output/Table_S2
-```
-
-## Model code
-
-```r
-source("FTC_model/Full_model.R")
-```
-
-This loads the model functions. Running a simulation requires a parameter vector, initial conditions, and aligned hourly drivers supplied by the caller, as documented in the source file. The model file is not a complete calibration workflow.
-
-## Scope
-
-The data files contain the inputs bundled for the figure and statistical analysis scripts.
-
 ## License and attribution
 
 Copyright © 2026 Jinyang Zheng.
