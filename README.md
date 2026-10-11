@@ -1,43 +1,28 @@
 # FTC_carbon_data_code
 
-R plotting scripts, accompanying figure data, and model code for a study of freeze-thaw cycles and soil carbon dynamics.
-
-## Version 2
-
-The [version2](version2/) directory contains 12 plotting scripts, the Table 1 analysis, the full model code, and 13 accompanying `.rds` data files. The original directory structure and file contents are preserved.
-
-From the repository root, run the version 2 scripts using their full repository paths, for example
-
-```sh
-Rscript version2/Fig_2/Fig_2_plot.R
-Rscript version2/Table_1/Table_1_analysis.R
-```
-
-The Table 1 analysis uses `nlme`, `lmerTest`, and `car`. Plotting and analysis scripts read their data from the same directory and write results to `version2_outputs` by default. A different output directory can be supplied as the first command-line argument.
-
-The figure and model directories at the repository root retain the earlier release. The examples below refer to that release.
+R plotting scripts, accompanying figure data, statistical analysis, and model code for a study of freeze-thaw cycles and soil carbon dynamics.
 
 ## Contents
 
-- `Fig_2` through the grouped figure directories contain 24 plotting scripts and 24 matching `.rds` data files for Figures 2–5 and Supplementary Figures S4–S23.
+The archive contains 11 folders and 27 source and data files.
+
+- `Fig_2`, `Fig_3_S4_S5`, `Fig_4_S8`, and `Fig_S3`, `Fig_S6`, `Fig_S7`, `Fig_S9`, `Fig_S10`, `Fig_S11` contain 12 plotting scripts and 12 matching `.rds` files for Figures 2–4 and Supplementary Figures S3–S11.
+- `Table_1` contains `Table_1_analysis.R` and `Table_1_data.rds`.
 - `FTC_model/Full_model.R` contains the freeze-thaw driver and carbon model functions.
-- Each `*_plot.R` script reads the matching `*_data.rds` file from the same directory and writes generated files to an `output` subdirectory.
 
-## Running a figure
+## Running figures and Table 1
 
-Install R and the packages used by the scripts. Package dependencies include `data.table`, `digest`, `dplyr`, `ggforce`, `gghalves`, `ggplot2`, `gtable`, `patchwork`, `ragg`, `scales`, `svglite`, and `systemfonts`. Several figures use Times New Roman, which should be installed for consistent typography.
+Install R and the packages used by the scripts. Plotting dependencies are `ggplot2`, `patchwork`, `ragg`, and `data.table`. Table 1 uses `nlme`, `lmerTest`, and `car`. Several figures use Times New Roman, which should be installed for consistent typography.
 
-Download the repository and keep its directory structure intact. From the repository root, run a figure in a fresh R session, for example
+Download the repository and keep its directory structure intact. From the repository root, run scripts with an explicit output directory, for example
 
 ```sh
-Rscript Fig_2/Fig_2_plot.R
+Rscript Fig_2/Fig_2_plot.R output/Fig_2
+Rscript Fig_3_S4_S5/Fig_3_plot.R output/Fig_3
+Rscript Table_1/Table_1_analysis.R output/Table_1
 ```
 
-Alternatively, in R
-
-```r
-source("Fig_2/Fig_2_plot.R")
-```
+Each plotting or analysis script reads its matching data file from the same directory. Plotting scripts generate PNG figures, and Table 1 generates a CSV table. The first command-line argument sets the output directory. If that argument and `FTC_OUTPUT_DIR` are both absent, results are written to a `version2_outputs` directory alongside the repository directory.
 
 To inspect the bundled data in R
 
@@ -52,11 +37,11 @@ names(figure_data)
 source("FTC_model/Full_model.R")
 ```
 
-This loads model functions. Running a simulation requires a parameter vector, initial conditions, and aligned hourly drivers supplied by the caller, as documented in the source file. The model file is not a complete calibration workflow.
+This loads the model functions. Running a simulation requires a parameter vector, initial conditions, and aligned hourly drivers supplied by the caller, as documented in the source file. The model file is not a complete calibration workflow.
 
 ## Scope
 
-The data files contain the inputs bundled for the figure scripts.
+The data files contain the inputs bundled for the figure and statistical analysis scripts.
 
 ## License and attribution
 

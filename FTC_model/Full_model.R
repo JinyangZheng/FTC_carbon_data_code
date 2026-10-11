@@ -1,5 +1,4 @@
 
-# Aggregate breakup occurs only while temperatures rise from zero to ten degrees.
 
 breakup_warming_gate <- function(temp) {
   temp <- as.numeric(temp)
@@ -36,17 +35,6 @@ make_ftc_drivers <- function(temp, cfg = FTC_cfg) {
   )
 }
 
-# Hourly carbon pools and fluxes, explicit Euler integration with a one-hour step.
-# x parameter order is listed below.
-# 1-4 C.sor1.10, C.sor1.minus10, C.sor2.10, C.sor2.minus10
-# 5-8 r1.10, r1.minus10, r2.10, r2.minus10
-# 9-12 V1, V2, MBC.D, Enz.P (natural-log rates)
-# 13-16 CUE.minus10, f1.f2, intercept_P.DOC, intercept_P.NOC
-# 17-19 dormancy.ratio, inactive.ratio, MBC.D.ice
-# x[15], x[16], x[19] are natural-log rates.
-# Supply x, initial MBC/DOC, CUE at 10 degrees and hourly temperature externally.
-# make_ftc_drivers(temp) provides the three driver vectors.
-# Output pools retain original normalized carbon units and hourly fluxes.
 Full_kernel <- function(x, MB0, DOC0, CUE10, time, temp,
                           active_modifier, freeze_effect, warming_gate,
                           enzyme_death_log = -7) {
