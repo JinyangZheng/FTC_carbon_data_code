@@ -1,126 +1,113 @@
-library(data.table)
-library(ggplot2)
-library(ragg)
+figure_data <- readRDS("Your_pathway/Fig_S7/Fig_S7_data.rds")
 
-script_frames <- Filter(Negate(is.null), lapply(sys.frames(), function(frame) frame$ofile))
-script_argument <- grep("^--file=", commandArgs(FALSE), value = TRUE)
-script_path <- if (length(script_frames)) tail(script_frames, 1L)[[1L]] else if (length(script_argument)) sub("^--file=", "", script_argument[[1L]]) else "Fig_S7_plot.R"
-code_dir <- dirname(normalizePath(script_path, winslash = "/", mustWork = TRUE))
-figure_data <- readRDS(file.path(code_dir, "Fig_S7_data.rds"))
-arguments <- commandArgs(TRUE)
-output_dir <- if (length(arguments)) arguments[[1L]] else Sys.getenv("FTC_OUTPUT_DIR", file.path(dirname(dirname(code_dir)), "version2_outputs", "Fig_S7"))
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+suppressPackageStartupMessages({
+  library(data.table)
+  library(ggplot2)
+  library(patchwork)
+})
 
-plot_data <- as.data.table(figure_data)
-axis_training <- as.data.table(structure(list(metric = c("a_dormant_MBC_fraction", "a_dormant_MBC_fraction", 
-"a_dormant_MBC_fraction", "a_dormant_MBC_fraction", "b_inactive_ENZ_fraction", 
-"b_inactive_ENZ_fraction", "b_inactive_ENZ_fraction", "b_inactive_ENZ_fraction", 
-"c_hourly_freeze_death_fraction", "c_hourly_freeze_death_fraction", 
-"c_hourly_freeze_death_fraction", "c_hourly_freeze_death_fraction", 
-"d_freeze_isolated_DOC_fraction", "d_freeze_isolated_DOC_fraction", 
-"d_freeze_isolated_DOC_fraction", "d_freeze_isolated_DOC_fraction", 
-"e_freeze_isolated_SOC_fraction", "e_freeze_isolated_SOC_fraction", 
-"e_freeze_isolated_SOC_fraction", "e_freeze_isolated_SOC_fraction", 
-"f_breakup_DOC_release_fraction", "f_breakup_DOC_release_fraction", 
-"f_breakup_DOC_release_fraction", "f_breakup_DOC_release_fraction", 
-"g_breakup_SOC_release_fraction", "g_breakup_SOC_release_fraction", 
-"g_breakup_SOC_release_fraction", "g_breakup_SOC_release_fraction", 
-"a_dormant_MBC_fraction", "a_dormant_MBC_fraction", "a_dormant_MBC_fraction", 
-"a_dormant_MBC_fraction", "b_inactive_ENZ_fraction", "b_inactive_ENZ_fraction", 
-"b_inactive_ENZ_fraction", "b_inactive_ENZ_fraction", "c_hourly_freeze_death_fraction", 
-"c_hourly_freeze_death_fraction", "c_hourly_freeze_death_fraction", 
-"c_hourly_freeze_death_fraction", "d_freeze_isolated_DOC_fraction", 
-"d_freeze_isolated_DOC_fraction", "d_freeze_isolated_DOC_fraction", 
-"d_freeze_isolated_DOC_fraction", "e_freeze_isolated_SOC_fraction", 
-"e_freeze_isolated_SOC_fraction", "e_freeze_isolated_SOC_fraction", 
-"e_freeze_isolated_SOC_fraction", "f_breakup_DOC_release_fraction", 
-"f_breakup_DOC_release_fraction", "f_breakup_DOC_release_fraction", 
-"f_breakup_DOC_release_fraction", "g_breakup_SOC_release_fraction", 
-"g_breakup_SOC_release_fraction", "g_breakup_SOC_release_fraction", 
-"g_breakup_SOC_release_fraction"), duration = structure(c(1L, 
-2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 
-2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 
-2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 2L, 3L, 4L, 1L, 
-2L, 3L, 4L, 1L, 2L, 3L, 4L), levels = c("LFLT", "LFST", "SFLT", 
-"SFST"), class = c("ordered", "factor")), axis_value = c(-5.4664475982307, 
--5.4664475982307, -5.4664475982307, -5.4664475982307, -4.39962465596257, 
--4.39962465596257, -4.39962465596257, -4.39962465596257, -11.2579638491801, 
--11.2579638491801, -11.2579638491801, -11.2579638491801, -3.04073589516555, 
--3.04073589516555, -3.04073589516555, -3.04073589516555, -2.95792212776157, 
--2.95792212776157, -2.95792212776157, -2.95792212776157, -1.23468587116098, 
--1.23468587116098, -1.23468587116098, -1.23468587116098, -0.290268650189142, 
--0.290268650189142, -0.290268650189142, -0.290268650189142, 51.0932895196461, 
-51.0932895196461, 51.0932895196461, 51.0932895196461, 40.8799249311925, 
-40.8799249311925, 40.8799249311925, 40.8799249311925, 102.251592769836, 
-102.251592769836, 102.251592769836, 102.251592769836, 30.6081471790331, 
-30.6081471790331, 30.6081471790331, 30.6081471790331, 30.5915844255523, 
-30.5915844255523, 30.5915844255523, 30.5915844255523, 11.1121728404488, 
-11.1121728404488, 11.1121728404488, 11.1121728404488, 3.05805373003783, 
-3.05805373003783, 3.05805373003783, 3.05805373003783), Day = c(48, 
-48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 
-48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 
-48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 
-48, 48, 48, 48, 48, 48, 48)), row.names = c(NA, 56L), class = "data.frame"))
-y_limits <- as.data.table(structure(list(metric = c("a_dormant_MBC_fraction", "b_inactive_ENZ_fraction", 
-"c_hourly_freeze_death_fraction", "d_freeze_isolated_DOC_fraction", 
-"e_freeze_isolated_SOC_fraction", "f_breakup_DOC_release_fraction", 
-"g_breakup_SOC_release_fraction"), axis_upper = c(51.0932895196461, 
-40.8799249311925, 102.251592769836, 30.6081471790331, 30.5915844255523, 
-11.1121728404488, 3.05805373003783), tick_step = c(25, 20, 50, 
-15, 15, 5, 1.5)), row.names = c(NA, 7L), class = "data.frame"))
-metric_labels <- c(a_dormant_MBC_fraction = "Dormant MBC\n(%)", b_inactive_ENZ_fraction = "Inactive ENZ\n(%)", 
-c_hourly_freeze_death_fraction = "Freeze-induced\nMBC mortality\n(%)", 
-d_freeze_isolated_DOC_fraction = "Freeze-isolated\nDOC\n(%)", 
-e_freeze_isolated_SOC_fraction = "Freeze-isolated\nSOC\n(%)", 
-f_breakup_DOC_release_fraction = "Breakup DOC\nrelease\n(%)", 
-g_breakup_SOC_release_fraction = "Breakup SOC\nrelease\n(%)")
-plot_data[, metric := factor(metric, levels = names(metric_labels))]
-axis_training[, metric := factor(metric, levels = names(metric_labels))]
-group_colours <- c(overall = "#000000", depth_0_10 = "#d9ae84", depth_70_80 = "#73442e")
-group_levels <- c("overall", "depth_0_10", "depth_70_80")
-group_labels <- c("Overall", "0\u201310 cm", "70\u201380 cm")
-line_alpha <- 0.7
-ribbon_alpha <- 0.15
-draw_order <- c("overall", "depth_70_80", "depth_0_10")
-font_family <- "Times New Roman"
-font_scale <- 1.5
-format_y_values <- function(values) {
-    format(values, trim = TRUE, scientific = FALSE, nsmall = 0)
+posterior_parameters <- c(
+  b_D = "doc_breakup_0", b_S = "soc_breakup_0", f_iso = "isolation_fraction",
+  v_upt = "doc_uptake_rate", v_cat = "soc_catalysis_rate", f_dorm = "dormancy_fraction",
+  r_frz = "freeze_mortality_rate", r_death = "microbial_death_rate", r_prod = "enzyme_production_rate"
+)
+group_columns <- c("ID", "treatment", "depth")
+posterior <- as.data.table(figure_data$posterior_draws)[,
+  c(group_columns, unname(posterior_parameters)), with = FALSE]
+setnames(posterior, unname(posterior_parameters), names(posterior_parameters))
+
+slopes <- as.data.table(figure_data$lhs_endpoints)[, .(
+  ID, treatment, depth,
+  "k_D,sor" = (doc_sorption_10 - doc_sorption_minus10) / 20,
+  "k_D,des" = (doc_desorption_10 - doc_desorption_minus10) / 20,
+  "k_S,sor" = (soc_protection_10 - soc_protection_minus10) / 20,
+  "k_S,des" = (soc_release_10 - soc_release_minus10) / 20,
+  e_slope = (measured_cue_10 - cue_minus10) / 20
+)]
+samples <- rbind(melt(posterior, id.vars = group_columns, variable.factor = FALSE),
+                 melt(slopes, id.vars = group_columns, variable.factor = FALSE))
+
+parameter_summary <- samples[, {
+  n <- .N
+  average <- mean(value)
+  half_width <- qt(0.975, n - 1L) * sd(value) / sqrt(n)
+  list(n = n, mean = average, ci_lower = average - half_width, ci_upper = average + half_width)
+}, by = .(treatment, depth, variable)]
+
+treatment_levels <- c("LFLT", "LFST", "SFLT", "SFST")
+colour_values <- c(LFLT = "#d9b0ff", LFST = "#5985d0", SFLT = "#e994ae", SFST = "#9ed69e")
+depths <- c("0-10", "70-80")
+linetype_values <- c("0-10" = "solid", "70-80" = "dashed")
+position_depth <- position_dodge(width = 0.35)
+
+rate_unit <- "plain(g)~plain(g)^{-1}~plain(h)^{-1}"
+slope_unit <- paste0(rate_unit, "~degree*C^{-1}")
+facet_label <- function(symbol, unit) {
+  paste0("atop(italic(", symbol, "), paste('(', ", unit, ", ')'))")
 }
-plot_object <- ggplot(plot_data, aes(x = DisplayDay)) +
-    geom_blank(data = axis_training, aes(x = Day, y = axis_value), inherit.aes = FALSE)
-for (draw_key in draw_order) {
-    group_data <- copy(plot_data[group_key == draw_key])
-    plot_object <- plot_object + geom_ribbon(data = group_data, aes(ymin = q025_percent, ymax = q975_percent, fill = group_key, 
-        group = group_key), alpha = ribbon_alpha, colour = NA, show.legend = FALSE) + geom_line(data = group_data, 
-        aes(y = mean_percent, colour = group_key, group = group_key), alpha = line_alpha, linewidth = 0.36, lineend = "round")
+parameter_labels <- list(
+  physical = c(
+    b_D = facet_label("b[D]", rate_unit),
+    b_S = facet_label("b[S]", rate_unit),
+    f_iso = "atop(italic(f[iso]), '(-)')",
+    "k_D,sor" = facet_label("k[D * ',' * sor]", slope_unit),
+    "k_D,des" = facet_label("k[D * ',' * des]", slope_unit),
+    "k_S,sor" = facet_label("k[S * ',' * sor]", slope_unit),
+    "k_S,des" = facet_label("k[S * ',' * des]", slope_unit)
+  ),
+  physiological = c(
+    v_upt = facet_label("v[upt]", rate_unit),
+    v_cat = facet_label("v[cat]", rate_unit),
+    f_dorm = "atop(italic(f[dorm]), '(-)')",
+    r_frz = facet_label("r[frz]", rate_unit),
+    e_slope = facet_label("e[slope]", "degree*C^{-1}"),
+    r_death = facet_label("r[death]", rate_unit),
+    r_prod = facet_label("r[prod]", rate_unit)
+  )
+)
+
+make_parameter_plot <- function(title, variable_labels) {
+  plot_data <- parameter_summary[variable %in% names(variable_labels)]
+  plot_data[, treatment_factor := factor(treatment, levels = treatment_levels)]
+  plot_data[, depth_factor := factor(depth, levels = depths)]
+  plot_data[, facet_factor := factor(variable, levels = names(variable_labels))]
+  ggplot(plot_data, aes(x = treatment_factor, y = mean)) +
+    geom_line(aes(group = depth_factor, linetype = depth_factor),
+              colour = "grey50", linewidth = 0.7, position = position_depth) +
+    geom_linerange(aes(ymin = ci_lower, ymax = ci_upper, colour = treatment_factor, group = depth_factor),
+                   linewidth = 0.7, position = position_depth, show.legend = FALSE) +
+    geom_point(aes(colour = treatment_factor, group = depth_factor),
+               size = 3, position = position_depth, show.legend = FALSE) +
+    facet_grid(rows = vars(facet_factor), scales = "free_y", switch = "y", drop = TRUE,
+               labeller = labeller(facet_factor = as_labeller(variable_labels, default = label_parsed))) +
+    scale_colour_manual(values = colour_values, drop = FALSE) +
+    scale_linetype_manual(values = linetype_values, breaks = depths, labels = depths, drop = FALSE) +
+    scale_x_discrete(drop = FALSE, expand = expansion(add = 0.32)) +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.3))) +
+    labs(title = title, x = NULL, y = NULL, linetype = "Soil depth (cm)") +
+    theme_bw(base_size = 10.5, base_family = "Times New Roman") +
+    theme(
+      panel.grid = element_blank(),
+      panel.border = element_rect(colour = "#333333", fill = NA, linewidth = 0.55),
+      panel.spacing.y = grid::unit(0.5, "mm"),
+      axis.text.x = element_text(size = 10.5, colour = "black", margin = margin(t = 0.8, unit = "mm")),
+      axis.text.y = element_text(size = 9.2, colour = "black", margin = margin(r = 0.6, unit = "mm")),
+      axis.ticks = element_line(linewidth = 0.45, colour = "#333333"),
+      axis.ticks.length = grid::unit(1, "mm"),
+      strip.background = element_blank(), strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 90, size = 9.8, colour = "black",
+                                       margin = margin(0, 1.2, 0, 0, unit = "mm")),
+      plot.title = element_text(size = 14, face = "plain", hjust = 0.5, margin = margin(b = 1.5, unit = "mm")),
+      legend.position = "bottom", legend.direction = "horizontal",
+      legend.title = element_text(size = 10.5), legend.text = element_text(size = 9.8),
+      legend.key.width = grid::unit(10, "mm"), legend.key.height = grid::unit(4, "mm"),
+      plot.margin = margin(3, 2, 2, 3, unit = "mm")
+    )
 }
-plot_object <- plot_object + facet_grid(rows = vars(metric), cols = vars(duration), scales = "free_y", switch = "y", 
-    drop = FALSE, labeller = labeller(metric = metric_labels)) + scale_fill_manual(values = group_colours, breaks = group_levels, guide = "none") + scale_colour_manual(values = group_colours, 
-    breaks = group_levels, labels = group_labels, name = NULL) + scale_x_continuous(breaks = c(0, 48, 96), expand = expansion(mult = 0.05)) + 
-    coord_cartesian(xlim = c(0, 96)) + scale_y_continuous(breaks = local({
-    row_axis_table <- copy(y_limits)
-    function(limits) {
-        nominal_span <- diff(limits)/1.1
-        nominal_upper <- limits[[2L]] - 0.05 * nominal_span
-        row_index <- which.min(abs(row_axis_table$axis_upper - nominal_upper))
-        c(0, row_axis_table$tick_step[[row_index]], 2 * row_axis_table$tick_step[[row_index]])
-    }
-}), labels = format_y_values, expand = expansion(mult = 0.05)) + labs(x = "Incubation days", y = NULL) + guides(colour = guide_legend(nrow = 1L, 
-    override.aes = list(linewidth = 0.7, alpha = line_alpha))) + theme_bw(base_size = 7 * font_scale, base_family = font_family) + 
-    theme(panel.grid = element_blank(), panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.38), 
-        axis.line = element_blank(), axis.ticks = element_line(linewidth = 0.32, colour = "black"), axis.ticks.length = grid::unit(1.1, 
-            "mm"), axis.text = element_text(size = 6.3 * font_scale, colour = "black", family = font_family), axis.title.x = element_text(size = 7.6 * 
-            font_scale, family = font_family, margin = margin(t = 2.5)), strip.background = element_blank(), strip.placement = "outside", 
-        strip.text.x = element_text(size = 7.7 * font_scale, face = "plain", family = font_family, margin = margin(b = 1.5)), 
-        strip.text.y.left = element_text(angle = 90, size = 6.7 * font_scale, face = "plain", hjust = 0.5, vjust = 0.5, 
-            lineheight = 0.95, family = font_family, margin = margin(r = 2)), panel.spacing.x = grid::unit(1.1, 
-            "mm"), panel.spacing.y = grid::unit(1, "mm"), legend.position = "top", legend.direction = "horizontal", 
-        legend.text = element_text(size = 7.7 * font_scale, family = font_family), legend.key.width = grid::unit(7.00, 
-            "mm"), legend.key.height = grid::unit(4.00, "mm"), legend.margin = margin(0, 0, 2, 0, unit = "mm"), legend.background = element_blank(), 
-        legend.key = element_blank(), plot.background = element_rect(fill = "white", colour = NA), plot.margin = margin(4, 
-            4, 4, 5, unit = "mm"))
-figure_plot <- plot_object
-ragg::agg_png(file.path(output_dir, "Fig_S7.png"), width = 7.20, height = 7.28, units = "in", res = 600, background = "white")
-print(figure_plot)
-grDevices::dev.off()
+physical_plot <- make_parameter_plot("Physical parameters", parameter_labels$physical)
+physiological_plot <- make_parameter_plot("Physiological parameters", parameter_labels$physiological) +
+  theme(legend.position = "none")
+figure_plot <- physical_plot + physiological_plot + plot_layout(ncol = 2, widths = c(1, 1), guides = "keep")
+
+ggsave("Your_pathway_outputs/Fig_S7/Fig_S7.png", figure_plot, device = ragg::agg_png,
+       width = 176.48, height = 272.39, units = "mm", dpi = 600, bg = "white", create.dir = TRUE)
