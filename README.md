@@ -4,12 +4,11 @@ R plotting scripts, accompanying figure data, statistical analysis, and model co
 
 ## Contents
 
-The archive contains 12 folders and 29 source and data files.
+The 11 folders contain 27 R scripts and data files.
 
-- `Fig_2`, `Fig_3_S4_S5`, `Fig_4_S8`, and `Fig_S3`, `Fig_S6`, `Fig_S7`, `Fig_S9`, `Fig_S10`, `Fig_S11` contain 12 plotting scripts and 12 matching `.rds` files for Figures 2–4 and Supplementary Figures S3–S11.
+- Figures 2–4 and Supplementary Figures S4–S12 each have a plotting script and a matching `.rds` file. These 12 pairs are in `Fig_2`, `Fig_3_S5_S6`, `Fig_4_S9`, `Fig_S4`, `Fig_S7`, `Fig_S8`, `Fig_S10`, `Fig_S11`, and `Fig_S12`.
 - `Table_1` contains `Table_1_analysis.R` and `Table_1_data.rds`.
-- `Table_S2` contains `Table_S2_analysis.R` and `Table_S2_data.rds`.
-- `FTC_model/Full_model.R` contains the freeze-thaw driver and carbon model functions.
+- `FTC_model/Full_model.R` defines `Full_kernel()`, which simulates soil carbon pools and fluxes during freeze–thaw cycles.
 
 ## License and attribution
 
